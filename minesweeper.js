@@ -1,77 +1,57 @@
-function createGrid(rows, cols) {
-  var container = document.getElementById("container")
-  var height = rows * 16
-  var width = cols * 16
-  container.style.width = width+"px"
-  container.style.height = height+"px"
+function Minesweeper(options) {
+  var NEWG = true
+  var ROWS = options.numRows
+  var COLS = options.numCols
+  var MINE = options.numMines
+  var GAME = []
+  var HSID = ""
 
-  for (var row = 0; row < rows; row++) {
-    for (var col = 0; col < cols; col++) {
-      var div = document.createElement("div")
-      div.className = "square " + matrix[row][col]
-      div.id = (row+1)+'_'+(col+1)
-      container.appendChild(div)
+  ;(function() {
+    var gamediv = document.getElementById("game");
+    gamediv.style.height = ROWS * 16 + "px"
+    gamediv.style.width = COLS * 16 + "px"
+    for (var row = 1; row <= ROWS; row++) for (var col = 1; col <= COLS; col++) {
+      var squarediv = document.createElement("div")
+      squarediv.className = "square blank"
+      squarediv.id = row+"_"+col
+      gamediv.appendChild(squarediv)
     }
-  }
-}
+  }) ()
 
-function intToClass(num) {
-  switch (num) {
-    case 0: return "open0"
-    case 1: return "open1"
-    case 2: return "open2"
-    case 3: return "open3"
-    case 4: return "open4"
-    case 5: return "open5"
-    case 6: return "open6"
-    case 7: return "open7"
-    case 8: return "open8"
-    default: return "blank"
-  }
-}
-
-function validCoord(row, col) {
-  return row >= 0 && row < ROWS && col >= 0 && col < COLS
-}
-
-function adjacentBombs(row, col) {
-  var adjacentBombs = 0
-  for (var i = -1; i <= 1; i++) {
-    for (var j = -1; j <= 1; j++) {
-      if (validCoord(row+i, col+j) && matrix[row+i][col+j] === "bombrevealed") {
-        adjacentBombs++
+  $(document).mousedown(function (e) {
+    if (e.button === 0 && HSID) {
+      console.log("Left Click Down on: "+HSID)
+    }
+    if (e.button === 2 && HSID) {
+      console.log("Right Click Down on: "+HSID)
+    }
+  })
+  $(document).mouseup(function (e) {
+    if (e.button === 0 && HSID) {
+      console.log("Left Click Up on: "+HSID)
+    }
+  })
+  $(document).keydown(function (e) {
+    if (e.which === 32 && HSID) {
+      console.log("Space Key Down on: "+HSID)
+    }
+  })
+  $("#game").mouseover(function (e) {
+    if (isSquare(e.target)) {
+      HSID = e.target.id
+    }
+  })
+  $("#game").mouseout(function (e) {
+    if (isSquare(e.target)) {
+      if (HSID = e.target.id) {
+        HSID = ""
       }
     }
-  }
-  return intToClass(adjacentBombs)
-}
+  })
 
-var ROWS = 16
-var COLS = 30
-var mines = 99
-
-var row, col
-var matrix = [];
-for (row = 0; row < ROWS; row++) {
-  matrix[row] = [];
-  for (col = 0; col < COLS; col++) {
-    matrix[row][col] = "blank";
-  }
-}
-while (mines) {
-  row = Math.floor(Math.random() * ROWS)
-  col = Math.floor(Math.random() * COLS)
-  if (matrix[row][col] === "blank") {
-    matrix[row][col] = "bombrevealed"
-    mines--
-  }
-}
-for (row = 0; row < ROWS; row++) {
-  for (col = 0; col < COLS; col++) {
-    if (matrix[row][col] !== "bombrevealed") {
-      matrix[row][col] = adjacentBombs(row, col)
-    } else matrix[row][col] = "bombflagged"
+  function isSquare(element) {
+    return element.className.substring(0, 6) === "square"
   }
 }
 
-createGrid(ROWS, COLS)
+Minesweeper({gameTypeId: 3, numRows: 16, numCols: 30, numMines: 99});
