@@ -2,15 +2,15 @@ html {
   background-color: #000;
 }
 
-#container {
+#game {
   position: absolute;
   margin: auto;
   top: 0;
   right: 0;
   bottom: 0;
   left: 0;
-  border-bottom: 1px solid #333;
-  border-right: 1px solid #333;
+  border-bottom: 1px solid #222;
+  border-right: 1px solid #222;
 }
 
 .square {
