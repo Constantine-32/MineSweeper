@@ -85,18 +85,18 @@ html {
   background-position: 0 -16px;
 }
 
-.bombflagged {
+.bomb0 {
   background-position: -16px -16px;
 }
 
-.bombdeath {
+.bomb1 {
   background-position: -32px -16px;
 }
 
-.bombmisflaged {
+.bomb2 {
   background-position: -48px -16px;
 }
 
-.bombrevealed {
+.bomb3 {
   background-position: -64px -16px;
 }
