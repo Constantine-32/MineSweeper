@@ -9,27 +9,36 @@
 
 class Minesweeper {
   constructor(options) {
-    this.NEWG = true
-    this.ROWS = options.numRows
-    this.COLS = options.numCols
-    this.MINE = options.numMines
-    this.GAME = []
+    this.rows = options.rows
+    this.cols = options.cols
+    this.mine = options.mine
+    this.game = true
 
-    let gamediv = document.getElementById("game");
-    gamediv.style.height = this.ROWS * 16 + "px"
-    gamediv.style.width = this.COLS * 16 + "px"
-    for (let row = 1; row <= this.ROWS; row++) {
-      for (let col = 1; col <= this.COLS; col++) {
+    const containerDiv = document.getElementById('container')
+    containerDiv.style.height = (this.rows * 16 + 39) + 'px'
+    containerDiv.style.width  = (this.cols * 16 +  1) + 'px'
+
+    const resetDiv = document.getElementById('reset')
+    resetDiv.style.marginLeft  = ((this.cols * 16 - 110) / 2) + 'px'
+    resetDiv.style.marginRight = ((this.cols * 16 - 110) / 2) + 'px'
+
+    const gameDiv = document.getElementById('game')
+    gameDiv.innerHTML = ''
+    gameDiv.style.height = (this.rows * 16) + 'px'
+    gameDiv.style.width  = (this.cols * 16) + 'px'
+
+    for (let row = 1; row <= this.rows; row++) {
+      for (let col = 1; col <= this.cols; col++) {
         let squarediv = document.createElement("div")
         squarediv.className = "square blank"
         squarediv.id = row + "_" + col
-        gamediv.appendChild(squarediv)
+        gameDiv.appendChild(squarediv)
       }
     }
   }
 }
 
-new Minesweeper({gameTypeId: 3, numRows: 16, numCols: 30, numMines: 99});
+new Minesweeper({rows: 16, cols: 30, mine: 99});
 
 let HSID = ''
 

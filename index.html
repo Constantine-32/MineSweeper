@@ -6,8 +6,20 @@
   <link rel="stylesheet" href="mines.css">
 </head>
 <body>
-<h1>Minesweeper</h1>
-<div id="game" oncontextmenu="return false;" ondrag="return false;" ondragstart="return false;"></div>
+<div id="container" oncontextmenu="return false;" ondrag="return false;" ondragstart="return false;">
+  <div class="digit-box" id="mines">
+    <div class="digit" id="mines-100"></div>
+    <div class="digit" id="mines-10"></div>
+    <div class="digit" id="mines-1"></div>
+  </div>
+  <div class="face0" id="reset"></div>
+  <div class="digit-box" id="time">
+    <div class="digit" id="time-100"></div>
+    <div class="digit" id="time-10"></div>
+    <div class="digit" id="time-1"></div>
+  </div>
+  <div id="game"></div>
+</div>
 <script src="mines.js"></script>
 </body>
 </html>
