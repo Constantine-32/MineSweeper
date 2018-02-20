@@ -18,7 +18,7 @@ function Minesweeper(options) {
     }
   }) ()
 
-  $(document).mousedown(function (e) {
+  document.addEventListener('mousedown', function (e) {
     if (e.button === 0 && HSID) {
       console.log("Left Click Down on: "+HSID)
     }
@@ -26,22 +26,22 @@ function Minesweeper(options) {
       console.log("Right Click Down on: "+HSID)
     }
   })
-  $(document).mouseup(function (e) {
+  document.addEventListener('mouseup', function (e) {
     if (e.button === 0 && HSID) {
       console.log("Left Click Up on: "+HSID)
     }
   })
-  $(document).keydown(function (e) {
+  document.addEventListener('keydown', function (e) {
     if (e.which === 32 && HSID) {
       console.log("Space Key Down on: "+HSID)
     }
   })
-  $("#game").mouseover(function (e) {
+  document.addEventListener('mouseover', function (e) {
     if (isSquare(e.target)) {
       HSID = e.target.id
     }
   })
-  $("#game").mouseout(function (e) {
+  document.addEventListener('mouseout', function (e) {
     if (isSquare(e.target)) {
       if (HSID = e.target.id) {
         HSID = ""
