@@ -334,7 +334,7 @@ document.addEventListener('mousedown', function(e) {
       game.setFace('face1')
     } else if (isSquare(e)) {
       mousedown = true
-      game.press(getId(e))
+      game.press(id)
       game.setFace('face2')
     }
   } else if (mouseRigth(e) && isSquare(e)) {
