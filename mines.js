@@ -7,6 +7,43 @@
  * Version: 1.0
  */
 
+class Timer {
+  constructor() {
+    this.dig1 = document.getElementById('time-100')
+    this.dig2 = document.getElementById('time-10')
+    this.dig3 = document.getElementById('time-1')
+    this.time = 0
+    this.siid = null
+  }
+
+  start() {
+    this.time = 1
+    this.update()
+    this.siid = setInterval(() => {
+      this.time++
+      this.update()
+    }, 1000)
+  }
+
+  stop() {
+    clearInterval(this.siid)
+  }
+
+  reset() {
+    this.stop()
+    this.time = 0
+    this.update()
+  }
+
+  update() {
+    if (this.time >= 0 && this.time <= 999) {
+      this.dig1.className = 'digit digit' + Math.floor(this.time / 100)
+      this.dig2.className = 'digit digit' + Math.floor(this.time / 10 % 10)
+      this.dig3.className = 'digit digit' + Math.floor(this.time % 10)
+    }
+  }
+}
+
 class Cell {
   constructor(dict, div, row, col, rows, cols) {
     this.dict = dict
@@ -132,6 +169,7 @@ class Mineswiper {
     this.game = false
     this.firs = true
     this.face = document.getElementById('reset')
+    this.time = new Timer()
     this.newBoard()
     this.newGame()
   }
@@ -172,6 +210,7 @@ class Mineswiper {
     this.minc = this.mine
     this.game = true
     this.firs = true
+    this.time.reset()
     this.updateMinesDisplay()
   }
 
@@ -185,6 +224,7 @@ class Mineswiper {
         if (cell.isFlagged() && !cell.isMine()) cell.setClass('bomb2')
       }
     }
+    this.time.stop()
   }
 
   winGame() {
@@ -197,6 +237,7 @@ class Mineswiper {
       }
     }
     this.minc = 0
+    this.time.stop()
     this.updateMinesDisplay()
   }
 
@@ -235,6 +276,7 @@ class Mineswiper {
     if (!this.game) return
     if (this.firs) {
       this.putMines(id)
+      this.time.start()
     }
     let res = this.dict[id].reveal1()
     if (res < 0) {
