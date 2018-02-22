@@ -250,8 +250,8 @@ class Mineswiper {
     do {
       row = Mineswiper.rand(1, this.rows)
       col = Mineswiper.rand(1, this.cols)
-    } while (this.dict[row+'_'+col].isMine())
-    this.dict[row+'_'+col].putMine()
+    } while (this.dict[row + '_' + col].isMine())
+    this.dict[row + '_' + col].putMine()
   }
 
   putMines(id) {
