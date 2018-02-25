@@ -4,6 +4,7 @@
   <meta charset="UTF-8">
   <title>Minesweeper</title>
   <link rel="stylesheet" href="mines.css">
+  <script src="mines.js"></script>
 </head>
 <body>
 <canvas id="background"></canvas>
@@ -21,7 +22,92 @@
   </div>
   <div id="game"></div>
 </div>
-<script src="mines.js"></script>
 <script src="backg.js"></script>
+<script>
+  const container = document.getElementById('container')
+  const game = new Mineswiper({rows: 16, cols: 30, mine: 99})
+
+  let mousedown = false
+  let resetdown = false
+  let id = ''
+
+  function mouseLeft(e) {
+    return e.button === 0
+  }
+
+  function mouseRigth(e) {
+    return e.button === 2
+  }
+
+  function keySpace(e) {
+    return e.which === 32
+  }
+
+  function keyF2(e) {
+    return e.which === 113
+  }
+
+  function isSquare(e) {
+    return e.target.className.substring(0, 6) === 'square'
+  }
+
+  function isReset(e) {
+    return getId(e) === 'reset'
+  }
+
+  function getId(e) {
+    return e.target.id
+  }
+
+  container.addEventListener('mousedown', function(e) {
+    if (mouseLeft(e)) {
+      if (isReset(e)) {
+        resetdown = true
+        game.setFace('face1')
+      } else if (isSquare(e)) {
+        mousedown = true
+        game.press(id)
+        game.setFace('face2')
+      }
+    } else if (mouseRigth(e) && isSquare(e)) {
+      game.flag(id)
+    }
+  })
+
+  container.addEventListener('mouseup', function(e) {
+    if (mouseLeft(e)) {
+      if (isReset(e) && resetdown) {
+        game.newGame()
+      } else if (isSquare(e)) {
+        game.reveal(id)
+      }
+      mousedown = false
+      resetdown = false
+      game.setFace('face0')
+    }
+  })
+
+  container.addEventListener('mouseover', function(e) {
+    if (isSquare(e)) {
+      id = getId(e)
+      if (mousedown) game.press(id)
+    }
+  })
+
+  container.addEventListener('mouseout', function(e) {
+    if (isSquare(e)) {
+      if (mousedown) game.unpress(id)
+      if (id === getId(e)) id = ''
+    }
+  })
+
+  document.addEventListener('keydown', function(e) {
+    if (keySpace(e) && id) {
+      game.keydown(id)
+    } else if (keyF2(e)) {
+      game.newGame()
+    }
+  })
+</script>
 </body>
 </html>
