@@ -29,7 +29,7 @@ html, body {
   width: 26px;
   height: 26px;
   border: 1px solid #222;
-  background-image: url("sprite.gif");
+  background-image: url("../img/sprite.gif");
 }
 
 #game {
@@ -47,14 +47,14 @@ html, body {
   float: left;
   width: 13px;
   height: 23px;
-  background-image: url("sprite.gif");
+  background-image: url("../img/sprite.gif");
 }
 
 .square {
   float: left;
   width: 16px;
   height: 16px;
-  background-image: url("sprite.gif");
+  background-image: url("../img/sprite.gif");
 }
 
 .digit0 {
