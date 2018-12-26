@@ -14,7 +14,7 @@
     <div class="digit" id="mines-10"></div>
     <div class="digit" id="mines-1"></div>
   </div>
-  <div class="face0" id="reset"></div>
+  <div class="face0" id="facebn"></div>
   <div class="digit-box" id="time">
     <div class="digit" id="time-100"></div>
     <div class="digit" id="time-10"></div>
@@ -28,7 +28,7 @@
   const game = new Mineswiper({rows: 16, cols: 30, mine: 99})
 
   let mousedown = false
-  let resetdown = false
+  let facebdown = false
   let id = ''
 
   function mouseLeft(e) {
@@ -51,8 +51,8 @@
     return e.target.className.substring(0, 6) === 'square'
   }
 
-  function isReset(e) {
-    return getId(e) === 'reset'
+  function isFaceBn(e) {
+    return getId(e) === 'facebn'
   }
 
   function getId(e) {
@@ -61,8 +61,8 @@
 
   container.addEventListener('mousedown', function(e) {
     if (mouseLeft(e)) {
-      if (isReset(e)) {
-        resetdown = true
+      if (isFaceBn(e)) {
+        facebdown = true
         game.setFace('face1')
       } else if (isSquare(e)) {
         mousedown = true
@@ -76,13 +76,13 @@
 
   container.addEventListener('mouseup', function(e) {
     if (mouseLeft(e)) {
-      if (isReset(e) && resetdown) {
+      if (isFaceBn(e) && facebdown) {
         game.newGame()
       } else if (isSquare(e)) {
         game.reveal(id)
       }
       mousedown = false
-      resetdown = false
+      facebdown = false
       game.setFace('face0')
     }
   })

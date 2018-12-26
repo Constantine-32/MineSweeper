@@ -168,7 +168,7 @@ class Mineswiper {
     this.minc = this.mine
     this.game = false
     this.firs = true
-    this.face = document.getElementById('reset')
+    this.face = document.getElementById('facebn')
     this.time = new Timer()
     this.newBoard()
     this.newGame()
@@ -179,9 +179,9 @@ class Mineswiper {
     containerDiv.style.height = (this.rows * 16 + 39) + 'px'
     containerDiv.style.width  = (this.cols * 16 +  1) + 'px'
 
-    const resetDiv = document.getElementById('reset')
-    resetDiv.style.marginLeft  = ((this.cols * 16 - 110) / 2) + 'px'
-    resetDiv.style.marginRight = ((this.cols * 16 - 110) / 2) + 'px'
+    const faceDiv = document.getElementById('facebn')
+    faceDiv.style.marginLeft  = ((this.cols * 16 - 110) / 2) + 'px'
+    faceDiv.style.marginRight = ((this.cols * 16 - 110) / 2) + 'px'
 
     const gameDiv = document.getElementById('game')
     gameDiv.innerHTML = ''
