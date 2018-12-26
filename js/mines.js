@@ -315,9 +315,9 @@ class Mineswiper {
     }
   }
 
-  setFace(a) {
-    if (this.game) {
-      this.face.className = a
+  setFace(face) {
+    if (face !== 'face2' || face === 'face2' && this.game) {
+      this.face.className = face
     }
   }
 
