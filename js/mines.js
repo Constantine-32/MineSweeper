@@ -56,6 +56,23 @@ class Cell {
     ].filter(a => a[0] > 0 && a[0] <= rows && a[1] > 0 && a[1] <= cols).map(a => a[0] + '_' + a[1])
   }
 
+  updateSpecial() {
+    if (this.va2 !== -1) return
+    let blank = 0
+    let flag = 0
+    for (const nei of this.nei) {
+      let temp = this.dict[nei]
+      if (temp.va2 === 0) blank += 1
+      if (temp.va2 === 1) flag += 1
+    }
+    if (blank > 0 && (blank + flag <= this.va1 || flag === this.va1))
+      this.setClass('xopen' + this.va1)
+    else if (flag === this.va1)
+      this.setClass('sopen' + this.va1)
+    else
+      this.setClass('open' + this.va1)
+  }
+
   isMine() {
     return this.va1 < 0
   }
@@ -174,6 +191,14 @@ class Mineswiper {
     this.newGame()
   }
 
+  updateSpecial() {
+    for (let row = 1; row <= this.rows; row++) {
+      for (let col = 1; col <= this.cols; col++) {
+        this.dict[row + '_' + col].updateSpecial()
+      }
+    }
+  }
+
   newBoard() {
     const containerDiv = document.getElementById('container')
     containerDiv.style.height = (this.rows * 16 + 39) + 'px'
@@ -270,6 +295,7 @@ class Mineswiper {
     if (!this.game) return
     this.minc += this.dict[id].flag()
     this.updateMinesDisplay()
+    game.updateSpecial()
   }
 
   reveal(id) {
@@ -279,6 +305,7 @@ class Mineswiper {
       this.time.start()
     }
     let res = this.dict[id].reveal1()
+    game.updateSpecial()
     if (res < 0) {
       this.endGame(id)
       this.dict[id].setClass('bomb1')
@@ -292,9 +319,11 @@ class Mineswiper {
     if (!this.game) return
     if (!this.dict[id].isRevealed()) {
       this.flag(id)
+      game.updateSpecial()
       return
     }
     let res = this.dict[id].reveal9()
+    game.updateSpecial()
     if (res < 0) {
       this.endGame(id)
     } else {
