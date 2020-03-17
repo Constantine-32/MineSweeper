@@ -258,9 +258,10 @@ class Mineswiper {
     for (let row = 1; row <= this.rows; row++) {
       for (let col = 1; col <= this.cols; col++) {
         let cell = this.dict[row + '_' + col]
-        if (!cell.isFlagged() && cell.isMine()) cell.setClass('bomb0')
+        if (!cell.isFlagged() && cell.isMine()) cell.flag()
       }
     }
+    this.updateSpecial()
     this.minc = 0
     this.time.stop()
     this.updateMinesDisplay()
