@@ -154,6 +154,7 @@ class Cell {
 
   updateSpecial() {
     if (this.va2 !== -1) return
+    if (this.va1 === 0) return
     let blank = 0
     let flag = 0
     for (const cell of this.nei) {
@@ -171,7 +172,7 @@ class Cell {
 
 class Mineswiper {
   constructor(options) {
-    this.dict = []
+    this.clls = []
     this.rows = options.rows >= 1 ? options.rows <= 99 ? options.rows : 99 : 1
     this.cols = options.cols >= 8 ? options.cols <= 99 ? options.cols : 99 : 8
     this.size = this.rows * this.cols
@@ -201,33 +202,33 @@ class Mineswiper {
 
   newBoard() {
     const containerDiv = document.getElementById('container')
-    containerDiv.style.height = (this.rows * 16 + 39) + 'px'
-    containerDiv.style.width  = (this.cols * 16 +  1) + 'px'
+    containerDiv.style.height = (this.rows * 32 + 78) + 'px'
+    containerDiv.style.width  = (this.cols * 32 +  2) + 'px'
 
     const faceDiv = document.getElementById('facebn')
-    faceDiv.style.marginLeft  = ((this.cols * 16 - 110) / 2) + 'px'
-    faceDiv.style.marginRight = ((this.cols * 16 - 110) / 2) + 'px'
+    faceDiv.style.marginLeft  = ((this.cols * 32 - 220) / 2) + 'px'
+    faceDiv.style.marginRight = ((this.cols * 32 - 220) / 2 + 1) + 'px'
 
     const gameDiv = document.getElementById('game')
     gameDiv.innerHTML = ''
-    gameDiv.style.height = (this.rows * 16) + 'px'
-    gameDiv.style.width  = (this.cols * 16) + 'px'
+    gameDiv.style.height = (this.rows * 32) + 'px'
+    gameDiv.style.width  = (this.cols * 32) + 'px'
 
     for (let id = 0; id < this.size; id++) {
       let div = document.createElement('div')
       div.className = 'square blank'
       div.id = id.toString()
       gameDiv.appendChild(div)
-      this.dict.push(new Cell(div))
+      this.clls.push(new Cell(div))
     }
 
     for (let row = 0; row < this.rows; row++) {
       for (let col = 0; col < this.cols; col++) {
-        this.dict[this.toId(row, col)].setNei([
+        this.clls[this.toId(row, col)].setNei([
             [row-1, col-1], [row-1, col  ], [row-1, col+1], [row  , col-1],
             [row  , col+1], [row+1, col-1], [row+1, col  ], [row+1, col+1]
           ].filter(a => 0 <= a[0] && a[0] < this.rows && 0 <= a[1] && a[1] < this.cols)
-            .map(a => this.dict[this.toId(a[0], a[1])])
+            .map(a => this.clls[this.toId(a[0], a[1])])
         )
       }
     }
@@ -236,7 +237,7 @@ class Mineswiper {
   }
 
   newGame() {
-    for (const cell of this.dict) cell.reset()
+    for (const cell of this.clls) cell.reset()
     this.blnk = this.size - this.mine
     this.minc = this.mine
     this.game = true
@@ -247,9 +248,9 @@ class Mineswiper {
   endGame() {
     this.setFace('face3')
     this.game = false
-    for (const cell of this.dict) {
-      if (!cell.isFlagged() && cell.isMine()) cell.setClass('bomb3') // TODO
+    for (const cell of this.clls) {
       if (cell.isFlagged() && !cell.isMine()) cell.setClass('bomb2')
+      if (!cell.isFlagged() && cell.isMine()) cell.setClass('bomb3') // TODO
     }
     this.time.stop()
   }
@@ -257,7 +258,7 @@ class Mineswiper {
   winGame() {
     this.setFace('face4')
     this.game = false
-    for (const cell of this.dict) {
+    for (const cell of this.clls) {
       if (!cell.isFlagged() && cell.isMine()) {
         cell.flag()
       }
@@ -270,26 +271,26 @@ class Mineswiper {
   putMine() {
     let cell
     do {
-      cell = this.dict[Math.floor(Math.random() * this.size)]
+      cell = this.clls[Math.floor(Math.random() * this.size)]
     } while (cell.isMine())
     cell.putMine()
   }
 
   putMines(id) {
-    this.dict[id].putMine()
-    this.dict[id].nei.map(cell => cell.addVal(-10))
+    this.clls[id].putMine()
+    this.clls[id].nei.map(cell => cell.addVal(-10))
 
     for (let i = 0; i < this.mine; i++)
       this.putMine()
 
-    this.dict[id].quitMine()
-    this.dict[id].nei.map(cell => cell.addVal(10))
+    this.clls[id].quitMine()
+    this.clls[id].nei.map(cell => cell.addVal(10))
     this.firs = false
   }
 
   flag(id) {
     if (!this.game) return
-    this.minc += this.dict[id].flag()
+    this.minc += this.clls[id].flag()
     game.updateSpecial()
   }
 
@@ -299,11 +300,11 @@ class Mineswiper {
       this.putMines(id)
       this.time.start()
     }
-    let res = this.dict[id].reveal1()
+    let res = this.clls[id].reveal1()
     game.updateSpecial()
     if (res < 0) {
       this.endGame(id)
-      this.dict[id].setClass('bomb1')
+      this.clls[id].setClass('bomb1')
     } else {
       this.blnk -= res
       if (this.blnk <= 0)
@@ -313,12 +314,12 @@ class Mineswiper {
 
   keydown(id) {
     if (!this.game) return
-    if (!this.dict[id].isRevealed()) {
+    if (!this.clls[id].isRevealed()) {
       this.flag(id)
       game.updateSpecial()
       return
     }
-    let res = this.dict[id].reveal9()
+    let res = this.clls[id].reveal9()
     game.updateSpecial()
     if (res < 0) {
       this.endGame(id)
@@ -330,13 +331,13 @@ class Mineswiper {
 
   press(id) {
     if (this.game) {
-      this.dict[id].press()
+      this.clls[id].press()
     }
   }
 
   unpress(id) {
     if (this.game) {
-      this.dict[id].unpress()
+      this.clls[id].unpress()
     }
   }
 
@@ -359,7 +360,7 @@ class Mineswiper {
   }
 
   updateSpecial() {
-    for (const cell of this.dict)
+    for (const cell of this.clls)
       cell.updateSpecial()
   }
 }
