@@ -183,7 +183,7 @@ class Mineswiper {
     this.firs = true
     this.face = document.getElementById('facebn')
     this.time = new Timer()
-    this.newBoard()
+    this.newBoard(options.zoom)
     this.newGame()
   }
 
@@ -200,19 +200,27 @@ class Mineswiper {
     return row * this.cols + col
   }
 
-  newBoard() {
+  newBoard(zoom) {
     const containerDiv = document.getElementById('container')
-    containerDiv.style.height = (this.rows * 32 + 78) + 'px'
-    containerDiv.style.width  = (this.cols * 32 +  2) + 'px'
+    containerDiv.style.height = (this.rows * 16 + 39) * zoom + 'px'
+    containerDiv.style.width  = (this.cols * 16 +  1) * zoom + 'px'
+    containerDiv.style.padding = 10 * zoom + 'px'
+    containerDiv.style.borderWidth = zoom + 'px'
 
     const faceDiv = document.getElementById('facebn')
-    faceDiv.style.marginLeft  = ((this.cols * 32 - 220) / 2) + 'px'
-    faceDiv.style.marginRight = ((this.cols * 32 - 220) / 2 + 1) + 'px'
+    faceDiv.style.height = 26 * zoom + 'px'
+    faceDiv.style.width  = 26 * zoom + 'px'
+    faceDiv.style.marginBottom = 10 * zoom + 'px'
+    faceDiv.style.marginLeft  = ((this.cols * 16 - 110) / 2) * zoom + 'px'
+    faceDiv.style.marginRight = ((this.cols * 16 - 110) / 2) * zoom + 'px'
+    faceDiv.style.borderWidth = zoom + 'px'
 
     const gameDiv = document.getElementById('game')
     gameDiv.innerHTML = ''
-    gameDiv.style.height = (this.rows * 32) + 'px'
-    gameDiv.style.width  = (this.cols * 32) + 'px'
+    gameDiv.style.height = (this.rows * 16) * zoom + 'px'
+    gameDiv.style.width  = (this.cols * 16) * zoom + 'px'
+    gameDiv.style.borderRightWidth = zoom + 'px'
+    gameDiv.style.borderBottomWidth = zoom + 'px'
 
     for (let id = 0; id < this.size; id++) {
       let div = document.createElement('div')
@@ -364,3 +372,88 @@ class Mineswiper {
       cell.updateSpecial()
   }
 }
+
+const container = document.getElementById('container')
+const game = new Mineswiper({rows: 16, cols: 30, mine: 99, zoom: 2})
+
+let mousedown = false
+let facebdown = false
+let id = ''
+
+function mouseLeft(e) {
+  return e.button === 0
+}
+
+function mouseRigth(e) {
+  return e.button === 2
+}
+
+function keySpace(e) {
+  return e.which === 32
+}
+
+function keyF2(e) {
+  return e.which === 113
+}
+
+function isSquare(e) {
+  return e.target.className.substring(0, 6) === 'square'
+}
+
+function isFaceBn(e) {
+  return getId(e) === 'facebn'
+}
+
+function getId(e) {
+  return e.target.id
+}
+
+container.addEventListener('mousedown', function(e) {
+  if (mouseLeft(e)) {
+    if (isFaceBn(e)) {
+      facebdown = true
+      game.setFace('face1')
+    } else if (isSquare(e)) {
+      mousedown = true
+      game.press(id)
+      game.setFace('face2')
+    }
+  } else if (mouseRigth(e) && isSquare(e)) {
+    game.flag(id)
+  }
+})
+
+document.addEventListener('mouseup', function(e) {
+  if (mouseLeft(e)) {
+    if (isFaceBn(e) && facebdown) {
+      game.newGame()
+    } else if (isSquare(e)) {
+      game.reveal(id)
+    }
+    mousedown = false
+    facebdown = false
+    if (game.game) game.setFace('face0')
+  }
+})
+
+container.addEventListener('mouseover', function(e) {
+  if (isSquare(e)) {
+    id = getId(e)
+    if (mousedown) game.press(id)
+  }
+})
+
+container.addEventListener('mouseout', function(e) {
+  if (isSquare(e)) {
+    if (mousedown) game.unpress(id)
+    if (id === getId(e)) id = ''
+  }
+})
+
+document.addEventListener('keydown', function(e) {
+  if (keySpace(e) && id) {
+    game.keydown(id)
+  } else if (keyF2(e)) {
+    game.newGame()
+  }
+})
